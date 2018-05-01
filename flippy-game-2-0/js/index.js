@@ -3,6 +3,8 @@ var rowValues = [];
 var rowBombs = [];
 var colValues = [];
 var colBombs = [];
+var keyColors = ["pink","green","yellow","blue","purple"];
+var score=1;
 
 for(i = 0; i < 25; i++){
   var randomNum = Math.floor(Math.random() * 5);
@@ -11,12 +13,12 @@ for(i = 0; i < 25; i++){
 }
 
 // PRINT GRID; TBD
-for(i=0;i<25;i++){
-  if(i % 5 == 0 && i > 4){ document.write("<br/>"); }
-  document.write(gameNumbers[i] + "&nbsp;");
-}
+//for(i=0;i<25;i++){
+//  if(i % 5 == 0 && i > 4){ document.write("<br/>"); }
+//  document.write(gameNumbers[i] + "&nbsp;");
+//}
 
-document.write("<br/><br/>");
+//document.write("<br/><br/>");
 
 
 // SUM ROWS
@@ -46,30 +48,67 @@ for(i=0;i<5;i++){
 
 // CHECK SUM AND BOMB VALUES
 
-for(i=0;i<5;i++){
-    document.write("ROW : "+ rowValues[i] +" <b class='bomb-output'>"+rowBombs[i]+"</b>");
-    document.write(" &nbsp;&nbsp;COL : "+colValues[i]+" <b class='bomb-output'>"+colBombs[i]+"</b>");
-    document.write("<br/>");
-    }
+//for(i=0;i<5;i++){
+//    document.write("ROW : "+ rowValues[i] +" <b class='bomb-output'>"+rowBombs[i]+"</b>");
+//    document.write(" &nbsp;&nbsp;COL : "+colValues[i]+" <b class='bomb-output'>"+colBombs[i]+"</b>");
+//    document.write("<br/>");
+//    }
 
 
 // BUILD THE DAMN THING
 
 // build and populate the table
-function tableCreate() {
+function createGameGrid() {
   var body = document.body,
       tbl = document.createElement("table");
   
+// DRAW THE BASIC GRID  
     for (var i = 0; i < 25; i+=5) {
       var tr = tbl.insertRow();
       for(var k=0;k<5;k++){
         var td = tr.insertCell();
-        td.appendChild(document.createTextNode(gameNumbers[i+k]));
+        $(td).addClass("card");
+        td.appendChild(document.createTextNode(gameNumbers[i+k]));        
       }
+      // DRAW THE KEY ROW AND VALUES
+      var td = tr.insertCell();
+      $(td).addClass(keyColors[i/5]);
+      $(td).append('<div class="top '+keyColors[i/5]+'_dark">'+rowValues[i/5]+'</div><div class="key">'+rowBombs[i/5]+"<i class='fas fa-exclamation-circle keybomb'></i></div>");
   }
+  // DRAW THE KEY COLUMN AND VALUES
+  var tr = tbl.insertRow();
+  for(var k=0;k<5;k++){
+        var td = tr.insertCell();
+        $(td).addClass(keyColors[k]);
+        $(td).append('<div class="top '+keyColors[k]+'_dark">'+colValues[k]+'</div><div class="key">'+colBombs[k]+"<i class='fas fa-exclamation-circle keybomb'></i></div>");     
+      }
   body.appendChild(tbl);
 }
 
-tableCreate();
+createGameGrid();
 
-$(td).onClick
+$("td").click(function() {
+  
+  //update score only if tile has not been flipped
+  if (!$(this).hasClass("flipped")) {
+    score*=$(this).text();
+    $(".scoreNum").text(score);
+  }
+  // if you choose a 0, make a bomb
+  if($(this).text() == 0){
+    $(this).addClass("bomb");
+    $(this).removeClass("card");
+    $(this).text("");
+    $(this).append("<i class='fas fa-exclamation-circle'></i>"); 
+  } else {
+    // otherwise flip the card
+    $(this).addClass("flipped");
+    $(this).removeClass("card");
+  }
+});
+
+$(".replay").click(function() {
+  score=1;
+  $(".scoreNum").text(0);
+  createGameGrid();
+});
