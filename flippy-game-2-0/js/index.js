@@ -6,20 +6,14 @@ var colBombs = [];
 var keyColors = ["pink","green","yellow","blue","purple"];
 var score=1;
 
-for(i = 0; i < 25; i++){
-  var randomNum = Math.floor(Math.random() * 5);
-  if(randomNum > 3){ randomNum = 0; }
-  gameNumbers.push(randomNum);
+// build and populate the table
+function createGameGrid() {
+  
+  for(i = 0; i < 25; i++){
+  var randomNum = Math.floor(Math.random() * 4);
+  if(randomNum > 3){ randomNum = 1; }
+  gameNumbers[i] = randomNum;
 }
-
-// PRINT GRID; TBD
-//for(i=0;i<25;i++){
-//  if(i % 5 == 0 && i > 4){ document.write("<br/>"); }
-//  document.write(gameNumbers[i] + "&nbsp;");
-//}
-
-//document.write("<br/><br/>");
-
 
 // SUM ROWS
 var k=0; 
@@ -46,19 +40,7 @@ for(i=0;i<5;i++){
   colBombs[j%5]=numBombs;
 }
 
-// CHECK SUM AND BOMB VALUES
-
-//for(i=0;i<5;i++){
-//    document.write("ROW : "+ rowValues[i] +" <b class='bomb-output'>"+rowBombs[i]+"</b>");
-//    document.write(" &nbsp;&nbsp;COL : "+colValues[i]+" <b class='bomb-output'>"+colBombs[i]+"</b>");
-//    document.write("<br/>");
-//    }
-
-
-// BUILD THE DAMN THING
-
-// build and populate the table
-function createGameGrid() {
+  
   var body = document.body,
       tbl = document.createElement("table");
   
@@ -88,7 +70,6 @@ function createGameGrid() {
 createGameGrid();
 
 $("td").click(function() {
-  
   //update score only if tile has not been flipped
   if (!$(this).hasClass("flipped")) {
     score*=$(this).text();
@@ -107,8 +88,8 @@ $("td").click(function() {
   }
 });
 
+// DRAWS NEW GRID BUT NEW GRID DOESN'T WORK?
 $(".replay").click(function() {
   score=1;
   $(".scoreNum").text(0);
-  createGameGrid();
 });
